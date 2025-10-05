@@ -6,9 +6,10 @@ TagManager:
   tags:
   - Floor
   - DangerZone
-  - StartPointOfWeapon
-  - MidPointOfWeapon
-  - EndPointOfWeapon
+  - DangerZoneTrigger
+  - StartPointOfCollectable
+  - EndPointOfCollectable
+  - Enemy
   layers:
   - Default
   - TransparentFX

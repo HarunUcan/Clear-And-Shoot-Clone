@@ -19,7 +19,7 @@ public class WaterGunController : MonoBehaviour
 
     // Toplanan silahlarýn aksiyon baþlayana kadar duracaklarý yerler
     [SerializeField] private List<Transform> _collectedWeaponPositions = new List<Transform>();
-    private int _currentCollectedWeaponIndex = 0;
+    public static int CurrentCollectedWeaponIndex = 0;
 
     void Update()
     {
@@ -60,17 +60,7 @@ public class WaterGunController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other != null && other.tag == "DangerZone")
-        {
-            Vector3 newCameraAngles = new Vector3(20f, 0f, 0f);
-            Vector3 newCameraPosition = new Vector3(Camera.main.transform.position.x, 12f, Camera.main.transform.position.z);
-            Camera.main.transform.DORotate(newCameraAngles, 1f);
-            Camera.main.transform.DOMove(newCameraPosition, 1f);
-        }
-
-    }
+    
 
     private void CastRays()
     {
@@ -94,40 +84,27 @@ public class WaterGunController : MonoBehaviour
                 if (hitRend == null) continue;
 
                 // Baþlangýç ve bitiþ noktasý boyandý mý kontrolü
-                if (hitInfo.collider.tag == "StartPointOfWeapon" || hitInfo.collider.tag == "EndPointOfWeapon")
+                if (hitInfo.collider.tag == "StartPointOfCollectable" || hitInfo.collider.tag == "EndPointOfCollectable")
                 {
-                    var weaponScript = hitInfo.collider.GetComponentInParent<Weapon>();
-                    Debug.Log("Weapon Check Point Touched");
-                    if (weaponScript != null)
+                    var collectableObject = hitInfo.collider.GetComponentInParent<ICollectable>();
+                    Debug.Log("Collectable Check Point Touched");
+                    if (collectableObject != null)
                     {
-                        if(hitInfo.collider.tag == "EndPointOfWeapon" && !weaponScript.IsEndPointPainted)
+                        if(hitInfo.collider.tag == "EndPointOfCollectable" && !collectableObject.IsEndPointPainted)
                         {
                             Debug.Log("End Point Touched");
 
-                            weaponScript.WeaponCheckPointSetStatus(WeaponCheckPoint.EndPoint, true);
+                            collectableObject.IsEndPointPainted = true;
                             hitInfo.collider.enabled = false; // Collider'ý devre dýþý býrak
 
-                            if(weaponScript.IsStartPointPainted && weaponScript.IsCollected)
+                            if(collectableObject.IsStartPointPainted && collectableObject.IsCleaned)
                             {
-                                /** TODO: TopMesh isimli kardeþ objenin collider'ýný devre dýþý býrak **/ 
-                                hitInfo.collider.transform.parent.GetComponentInChildren<Collider>().enabled = false;
-                                hitInfo.collider.transform.parent.parent = Camera.main.transform;
-
-                                hitInfo.collider.transform.parent.DOMoveY(10f, 1.2f).SetEase(Ease.OutBounce).OnComplete(() =>
-                                {
-                                    Vector3 targetScale = hitInfo.collider.transform.parent.localScale * .7f;
-                                    hitInfo.collider.transform.parent.DOScale(targetScale, 1f).SetEase(Ease.InOutSine);
-                                    hitInfo.collider.transform.parent.DORotate(new Vector3(0f, 0f, 90f), 1f, RotateMode.FastBeyond360).SetEase(Ease.InOutSine);
-                                    hitInfo.collider.transform.parent.DOMove(_collectedWeaponPositions[_currentCollectedWeaponIndex].position, .05f).SetEase(Ease.InOutSine).OnComplete(() =>
-                                    {
-                                        _currentCollectedWeaponIndex++;
-                                    });
-                                });
+                                collectableObject.Collect(_collectedWeaponPositions[CurrentCollectedWeaponIndex]);
                             }
                         }
-                        else if(hitInfo.collider.tag == "StartPointOfWeapon" && !weaponScript.IsStartPointPainted)
+                        else if(hitInfo.collider.tag == "StartPointOfCollectable" && !collectableObject.IsStartPointPainted)
                         {
-                            weaponScript.WeaponCheckPointSetStatus(WeaponCheckPoint.StartPoint, true);
+                            collectableObject.IsStartPointPainted = true;
                             hitInfo.collider.enabled = false; // Collider'ý devre dýþý býrak
                             Debug.Log("Start Point Touched");
                         }
@@ -137,11 +114,11 @@ public class WaterGunController : MonoBehaviour
                 if (hitInfo.collider.tag != "Floor" && hitInfo.collider.GetComponent<MaskTextureSpawner>() != null)
                 {
                     var maskSpawner = hitInfo.collider.GetComponent<MaskTextureSpawner>();
-                    var weaponScript = hitInfo.collider.GetComponentInParent<Weapon>();
-                    var cleanPercentTreshold = weaponScript.CleanPercentThreshold;
-                    if(maskSpawner.CleanPercent >= cleanPercentTreshold && weaponScript.IsCollected == false )
+                    var collectable = hitInfo.collider.GetComponentInParent<ICollectable>();
+                    var cleanPercentTreshold = collectable.CleanPercentThreshold;
+                    if(maskSpawner.CleanPercent >= cleanPercentTreshold && collectable.IsCleaned == false )
                     {
-                        weaponScript.IsCollected = true;
+                        collectable.IsCleaned = true;
                     }
                 }
 
