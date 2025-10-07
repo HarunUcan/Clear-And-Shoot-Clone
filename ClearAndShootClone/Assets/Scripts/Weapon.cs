@@ -145,8 +145,8 @@ public class Weapon : MonoBehaviour, ICollectable
                 _meshTop.transform.DOKill();
                 _meshBottom.transform.DOKill();
             }
-            transform.localRotation = Quaternion.identity;
-            transform.localPosition = new Vector3(transform.localPosition.x, 0f, transform.localPosition.z);
+            //transform.localRotation = Quaternion.identity;
+            //transform.localPosition = new Vector3(transform.localPosition.x, 0f, transform.localPosition.z);
         }
         else
         {

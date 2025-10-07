@@ -1,9 +1,10 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, IDamageable
 {
     [SerializeField] private Transform _firePoint;
     [SerializeField] private GameObject _bulletPrefab;
@@ -54,8 +55,14 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(float damage)
     {
         _currentHealth -= damage;
-        _healthText.text = _currentHealth.ToString("0");
-        if(_currentHealth <= 0)
+        //_healthText.text = _currentHealth.ToString("0");
+        // dotween ile animasyonlu güncelleme
+        float displayedHealth = float.Parse(_healthText.text);
+        DOTween.To(() => displayedHealth, x => displayedHealth = x, _currentHealth, 0.2f).OnUpdate(() =>
+        {
+            _healthText.text = displayedHealth.ToString("0");
+        });
+        if (_currentHealth <= 0)
         {
             Die();
         }
