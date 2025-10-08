@@ -1,4 +1,4 @@
-# Clear-and-Shoot
+# Clear-And-Shoot-Clone
 
 ## ⚙️ Kontroller
 * **W / A / S / D** veya **Yön Tuşları** → Hareket et  
