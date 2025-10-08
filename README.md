@@ -5,8 +5,7 @@
 
 ## 💰 Toplanabilir Öğeler
 * **Altın (Coin):** Yeni silahlar veya geliştirmeler almak için kullanılır.  
-* **Hasar Artırıcı:** Mermilerin hasarını artırır.  
-* **Ateş Hızı Artırıcı:** Atış hızını yükseltir.  
+* **Hasar Artırıcı:** Mermilerin hasarını artırır.   
 
 ## 🔧 Özellikler
 * Dinamik kamera takibi  
