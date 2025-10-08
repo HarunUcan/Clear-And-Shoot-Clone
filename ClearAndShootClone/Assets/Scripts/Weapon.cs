@@ -78,6 +78,18 @@ public class Weapon : MonoBehaviour, ICollectable
         }
     }
 
+    public void IncreaseDamage(float amount)
+    {
+        foreach (var bullet in _bulletPool)
+        {
+            if (bullet.TryGetComponent<BulletController>(out BulletController bulletController))
+            {
+                bulletController.IncreaseDamage(amount);
+            }
+        }
+        Debug.Log("Increased bullet damage by: " + amount);
+    }
+
     public void Collect(Transform target)
     {
         GetComponentInChildren<Collider>().enabled = false;

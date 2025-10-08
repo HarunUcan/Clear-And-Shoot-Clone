@@ -15,12 +15,30 @@ public class Money : MonoBehaviour, ICollectable
     [SerializeField] private RectTransform _panelTransform;
     [SerializeField] private Image _image;
 
+    [SerializeField] private Sprite _uiCoinSprite; // UI'da gösterilecek coin sprite'ı
+    [SerializeField] private Transform _targetUI; // UI'daki para iconunun Transform'u
+
 
 
     public void Collect(Transform target)
     {
+        GetComponentInChildren<Collider>().enabled = false;
+        transform.parent = Camera.main.transform;
 
-        FlyToTarget();
+        transform.DOMoveY(10f, 1.2f).SetEase(Ease.OutBounce).OnComplete(() =>
+        {
+            Vector3 targetScale = transform.localScale * .7f;
+            transform.DOScale(targetScale, 1f).SetEase(Ease.InOutSine);
+            transform.DORotate(new Vector3(0f, 0f, 90f), 1f, RotateMode.FastBeyond360).SetEase(Ease.InOutSine);
+            transform.DOMove(target.position, .05f).SetEase(Ease.InOutSine);
+        }).OnComplete(() =>
+        {
+            transform.DOScale(0f, .5f).SetEase(Ease.InOutSine).OnComplete(() =>
+            {
+                UIManager.Instance.FlyToUI(transform);
+                GameManager.Instance.UpdateMoneyAmount(100);
+            });
+        });
 
     }
 
@@ -35,18 +53,6 @@ public class Money : MonoBehaviour, ICollectable
     {
         
     }
-
-    private void FlyToTarget()
-    {
-        float panelTransformCenterX = _panelTransform.rect.center.x;
-
-        Vector3 panelTopPoint = _panelTransform.TransformPoint(new Vector2(panelTransformCenterX, _panelTransform.rect.yMax));
-
-        _image.transform.position = panelTopPoint;
-
-        panelTopPoint.z = 180f;
-        Vector3 panelCenterPointWorld = Camera.main.ScreenToWorldPoint(panelTopPoint);
-        transform.DOMove(panelCenterPointWorld, 1f).SetEase(Ease.InQuad);
-    }
-
 }
+
+

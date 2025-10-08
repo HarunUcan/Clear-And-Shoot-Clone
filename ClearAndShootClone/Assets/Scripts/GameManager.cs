@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     private Vector3 initialCameraPosition;
     private Quaternion initialCameraRotation;
     [SerializeField] private GameObject _waterGun;
+    public int MoneyAmount { get; set; } = 0;
 
     public static List<GameObject> CollectedWeapons = new List<GameObject>();
 
@@ -28,12 +29,20 @@ public class GameManager : MonoBehaviour
     {
         initialCameraPosition = Camera.main.transform.position;
         initialCameraRotation = Camera.main.transform.rotation;
+
+        UIManager.Instance.UpdateMoneyText(MoneyAmount);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void UpdateMoneyAmount(int increaseAmount)
+    {
+        MoneyAmount += increaseAmount;
+        UIManager.Instance.UpdateMoneyText(MoneyAmount);
     }
 
     public void ChangeGameState()

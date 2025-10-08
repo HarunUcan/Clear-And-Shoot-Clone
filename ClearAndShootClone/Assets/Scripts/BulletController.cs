@@ -21,4 +21,11 @@ public class BulletController : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
+    public void IncreaseDamage(float amount)
+    {
+        _damage += amount;
+        if (_damage < 0)
+            _damage = 0;
+    }
 }

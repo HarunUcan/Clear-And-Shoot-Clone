@@ -8,7 +8,9 @@ public class GradientImageGenerator : MonoBehaviour
     public Image targetImage;
 
     [Tooltip("Gradyan (Inspector'dan renkleri ayarla)")]
-    public Gradient gradient = DefaultGradient();
+    //private Gradient _initGrandient = DefaultGradient();
+    public Gradient GradientGreen = DefaultGradient();
+    public Gradient GradientRed = DefaultGradient();
 
     [Tooltip("Geniþlik/heigth (UI için yüksek çözünürlük gerekmeyebilir)")]
     public int width = 32;
@@ -25,13 +27,18 @@ public class GradientImageGenerator : MonoBehaviour
         targetImage = GetComponent<Image>();
     }
 
-    void Start()
+    private void Awake()
     {
         if (targetImage == null) targetImage = GetComponent<Image>();
-        ApplyGradient();
+        //ApplyGradient(_initGrandient);
     }
 
-    public void ApplyGradient()
+    void Start()
+    {
+        
+    }
+
+    public void ApplyGradient(Gradient gradient)
     {
         int w = Mathf.Max(1, width);
         int h = Mathf.Max(1, height);

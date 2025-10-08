@@ -1,25 +1,22 @@
+using DG.Tweening;
+using System.Collections;
 using UnityEngine;
 
 public class DangerZoneTriggerController : MonoBehaviour
 {
     private GameManager _gameManager;
     private Vector3 _offset;
+    [SerializeField] private Transform _target;
     void Start()
     {
         _gameManager = GameManager.Instance;
-
-        if (Camera.main != null)
-        {
-            _offset = transform.position - Camera.main.transform.position;
-        }
+        _offset = transform.position - new Vector3(_target.position.x, transform.position.y, _target.position.z);
     }
 
     private void LateUpdate()
     {
-        if (Camera.main != null)
-        {
-            transform.position = Camera.main.transform.position + _offset;
-        }
+        Vector3 targetPos = new Vector3(_target.position.x, transform.position.y, _target.position.z);
+        transform.position = targetPos + _offset;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -27,6 +24,12 @@ public class DangerZoneTriggerController : MonoBehaviour
         if (other != null && other.tag == "DangerZone")
         {
             _gameManager.ChangeGameState();
+        }
+
+        else if (other != null && other.tag == "Money")
+        {
+            UIManager.Instance.FlyToUI(other.transform);
+            GameManager.Instance.UpdateMoneyAmount(100);
         }
 
     }
